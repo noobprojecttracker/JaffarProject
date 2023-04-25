@@ -14,6 +14,9 @@
 
 using namespace std;
 
+ifstream fileInput;
+ofstream fileOut;
+
 namespace timer
 {
     auto startTime = chrono::steady_clock::now();;
@@ -158,6 +161,27 @@ int quiz_player(string player_ID, int quiz_length, int how_hard){
     return correct;
 }
 
+void highscore(int final, double time)
+{
+    fileInput.open("Scoreboard.txt");
+    
+    int oldHigh;
+    fileInput >> oldHigh;
+    double oldTime;
+    fileInput >> oldTime;
+
+    if (final > oldHigh && time < oldTime)
+    {
+        fileOut.open("Scoreboard.txt");
+        fileOut << final << endl << time << endl;
+        cout << "Your new highscore has been saved to the Scoreboard file" << endl;
+    }
+    else
+    {
+        cout << "A score of " << oldHigh << " is still to be beaten! And it only took them " << oldTime << " seconds!" << endl;
+    }
+
+}
 
 // This function prints out a message criticizing or congratulating the user
 // based on the grade received on their math quiz
@@ -176,7 +200,9 @@ void evaluate_performance(int score, int questions){
         cout << "\nLooks like you need to brush up on your math skills! You scored a " << score << " out of " << questions << ". That comes out to " << setprecision(3) << final << " percent. Yikes!" << endl;
         cout << "and it took you " << setprecision(3) << timer::totalTime << " seconds? Better luck next time!" << endl;
     }
+    highscore(final, timer::totalTime);
 }
+
 
 
 void welcome_screen(){
